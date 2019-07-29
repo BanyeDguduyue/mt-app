@@ -1,5 +1,5 @@
 <template>
-  <div class="m-header">
+  <div>
     <template v-if="user">
       欢迎您，<span class="username">{{user}}</span>
       [<nuxt-link to='/exit'>退出</nuxt-link>]
