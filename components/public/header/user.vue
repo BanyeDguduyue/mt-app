@@ -12,10 +12,17 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   data(){
     return {
       user:''
+    }
+  },
+  async mounted(){
+    const {status,data:{user}} = await axios.get('/users/getUser')
+    if(status == 200){ 
+      this.user = user
     }
   }
 }
