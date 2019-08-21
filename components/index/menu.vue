@@ -21,10 +21,8 @@
 import Menu from '@/components/index/menu'
 export default {
   computed:{
-    curdetail(){
-      console.log();
-      
-      return this.menu.filter(item => item.type == this.kind)[0]
+    curdetail(){ 
+      return this.$store.state.home.menu.filter(item => item.type == this.kind)[0]
     }
   },
   components: {
@@ -51,34 +49,7 @@ export default {
   data() {
     return {
       kind:'',
-      menu: [{
-        type: 'food',
-        name: '美食',
-        child:[{
-          title:'美食',
-          child:['代金券','冰淇淋','火腿肠']
-        }]
-      },
-      {
-        type: 'takeout',
-        name: '外卖',
-        child:[{
-          title:'外卖',
-          child:['代金券','冰淇淋','火腿肠']
-        }]
-      },
-      {
-        type: 'hotel',
-        name: '酒店',
-        child:[{
-          title:'酒店',
-          child:['五星级','四星级','三星级']
-        }]
-      },
-      {
-        type:'food',
-        name:'美食'
-      }]
+      menu:this.$store.state.home.menu
     }
   }
 }
