@@ -6,21 +6,14 @@
       </el-col>
       <el-col :span="15" class="center">
         <div class="wrapper">
-          <el-input v-model="search" @focus="inputFocus" @blur="inputBlur" placeholder="搜索商店或地点"></el-input>
+          <el-input @input="input" v-model="search" @focus="inputFocus" @blur="inputBlur" placeholder="搜索商店或地点"></el-input>
           <button class="el-button el-button-primary"><i class="el-icon-search"></i></button>
           <dl class="hotPlace" v-if="isHotPlace">
             <dt>热门搜索</dt>
-            <dd>火锅</dd>
-            <dd>火锅</dd>
-            <dd>火锅</dd>
-            <dd>火锅</dd>
+            <dd v-for="item in hotPlace" :key="item">{{item.name}}</dd>
           </dl>
           <dl class="searchList" v-if="isSearchList">
-            <dd>火锅</dd>
-            <dd>火锅</dd>
-            <dd>火锅</dd>
-            <dd>火锅</dd>
-            <dd>火锅</dd>
+            <dd v-for="(item,idx) in searchList" :key="idx">{{item.name}}</dd>
           </dl>
 
         </div>
@@ -83,11 +76,15 @@
 </template>
 
 <script>
+import lodash from 'lodash'
+import axios from 'axios'
 export default {
   data(){
     return {
       search:'',
-      isFocus: false
+      isFocus: false,
+      searchList:[],
+      hotPlace:this.$store.state.home.hotPlace.slice(0,5)
     }
   },
   computed:{
@@ -106,7 +103,20 @@ export default {
       setTimeout(()=>{
         this.isFocus = false
       },200)
-    }
+    },
+    input:lodash.debounce(async function(){
+      let _this = this
+      let city = this.$store.state.geo.position.city.replace('市','')
+      this.searchList = []
+      let {status,data:{top}} = await axios.get('/search/top',{
+        params:{
+          input:this.search,
+          city
+        }
+      })
+      // 截取10条信息以免太多
+      this.searchList = top.slice(0,10)
+    })
   }
 }
 </script>

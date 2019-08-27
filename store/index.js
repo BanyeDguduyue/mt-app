@@ -1,3 +1,5 @@
+import { log } from 'util';
+
 const axios = require('@/server/interface/utils/axios')
 
 export const state = () => ({
@@ -34,5 +36,12 @@ export const actions = {
 
     const {status:status2,data:{menu}} = await axios.get('geo/menu')
     commit('home/setMenu',status2 === 200 ? menu:[])
+
+    const {status:status3,data:{result}} = await axios.get('/search/hotPlace',{
+      params:{
+        city:app.store.state.geo.position.city.replace('市','')
+      }
+    })
+    commit('home/setHotPlace',status3 === 200?result:[])
   }
 }

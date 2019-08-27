@@ -49,9 +49,9 @@ router.get('/menu', async ctx => {
 
 // 获取省份的相关数据
 router.get('/province', async ctx => {
+  // 获取所有的省份
   let province = await Province.find()
-  console.log(province);
-  
+
   ctx.body = {
     province: province.map(item => {
       return {
@@ -62,18 +62,25 @@ router.get('/province', async ctx => {
   }
 })
 
-router.get('/province/:id',async ctx => {
-  let city = await City.findOne({id:ctx.params.id})
+// 根据id差省份城市
+router.get('/province/:id', async ctx => {
+  let city = await City.findOne({
+    id: ctx.params.id
+  })
 
   ctx.body = {
-    code:0,
-    city:city.value.map(item => {
-      return {province: item.province,id:item.id,name:item.name}
+    code: 0,
+    city: city.value.map(item => {
+      return {
+        province: item.province,
+        id: item.id,
+        name: item.name
+      }
     })
   }
 })
 
-router.get('/city',async ctx => {
+router.get('/city', async ctx => {
   let city = []
   let result = await City.find()
   result.forEach(item => {
@@ -81,7 +88,7 @@ router.get('/city',async ctx => {
   })
 
   ctx.body = {
-    code:0,
+    code: 0,
     city: city.map(item => {
       return {
         province: item.province,
