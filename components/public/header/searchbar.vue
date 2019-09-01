@@ -10,10 +10,14 @@
           <button class="el-button el-button-primary"><i class="el-icon-search"></i></button>
           <dl class="hotPlace" v-if="isHotPlace">
             <dt>热门搜索</dt>
-            <dd v-for="item in hotPlace" :key="item">{{item.name}}</dd>
+            <dd v-for="item in hotPlace" :key="item.name">
+              <a :href="'/products?keyword=' + encodeURIComponent(item.name)">{{item.name}}</a>
+            </dd>
           </dl>
           <dl class="searchList" v-if="isSearchList">
-            <dd v-for="(item,idx) in searchList" :key="idx">{{item.name}}</dd>
+            <dd v-for="(item,idx) in searchList" :key="idx">
+              <a :href="'/products?keyword=' + encodeURIComponent(item.name)">{{item.name}}</a>
+            </dd>
           </dl>
 
         </div>
@@ -79,43 +83,43 @@
 import lodash from 'lodash'
 import axios from 'axios'
 export default {
-  data(){
+  data() {
     return {
-      search:'',
+      search: '',
       isFocus: false,
-      searchList:[],
-      hotPlace:this.$store.state.home.hotPlace.slice(0,5)
+      searchList: [],
+      hotPlace: this.$store.state.home.hotPlace.slice(0, 5)
     }
   },
-  computed:{
-    isHotPlace(){
-      return !this.search&&this.isFocus
+  computed: {
+    isHotPlace() {
+      return !this.search && this.isFocus
     },
-    isSearchList(){
-      return this.search&&this.isFocus
+    isSearchList() {
+      return this.search && this.isFocus
     }
   },
-  methods:{
-    inputFocus(){
+  methods: {
+    inputFocus() {
       this.isFocus = true
     },
-    inputBlur(){
-      setTimeout(()=>{
+    inputBlur() {
+      setTimeout(() => {
         this.isFocus = false
-      },200)
+      }, 200)
     },
-    input:lodash.debounce(async function(){
+    input: lodash.debounce(async function () {
       let _this = this
-      let city = this.$store.state.geo.position.city.replace('市','')
+      let city = this.$store.state.geo.position.city.replace('市', '')
       this.searchList = []
-      let {status,data:{top}} = await axios.get('/search/top',{
-        params:{
-          input:this.search,
+      let { status, data: { top } } = await axios.get('/search/top', {
+        params: {
+          input: this.search,
           city
         }
       })
       // 截取10条信息以免太多
-      this.searchList = top.slice(0,10)
+      this.searchList = top.slice(0, 10)
     })
   }
 }
