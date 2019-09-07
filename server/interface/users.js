@@ -87,14 +87,14 @@ router.post('/signup', async ctx => {
 
 
     if (nuser) {
-      console.log(1);
+      
       
       // 跳转到登录页面
       let res = await axios.post('/users/signin', {
         username:username,
         password:password
       })
-      console.log(res.data);
+    
       
       if (res.data && res.data.code === 0) {
         ctx.body = {
@@ -120,7 +120,7 @@ router.post('/signup', async ctx => {
 
 // 登录的接口
 router.post('/signin', async (ctx, next) => {
-  console.log(ctx.request.body);
+  
   
   // 调用passport的方法
   return Passport.authenticate('local', function (err, user, info, status) {
@@ -191,15 +191,15 @@ router.post('/verify', async (ctx, next) => {
     subject: '李雨芯版美团注册码',
     html: `您的注册码是${ko.code}`
   }
-  console.log(mailOptions);
+  
 
   // 发送邮件
   await transport.sendMail(mailOptions, (error, info) => {
     if (error) {
-      return console.log(error);
+      return 
     } else {
       // redis储存设置相关数据
-      console.log('ok');
+      
       Store.hmset(`nodemail:${ko.user}`, 'code', ko.code, 'expire', ko.expire, 'email', ko.email)
     }
   })
@@ -216,6 +216,8 @@ router.get('/exit', async (ctx, next) => {
   await ctx.logout()
   // 二次验证是否注销
   // 检查现在是否是登录状态
+  console.log('exit',ctx.isAuthenticated());
+  
   if (!ctx.isAuthenticated()) {
     ctx.body = {
       code: 0,
@@ -229,6 +231,7 @@ router.get('/exit', async (ctx, next) => {
 
 // 获取用户名
 router.get('/getUser', async ctx => {
+  console.log('get',ctx.isAuthenticated());
   if (ctx.isAuthenticated()) {
     const {
       username,

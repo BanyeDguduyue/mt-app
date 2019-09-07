@@ -47,10 +47,10 @@ passport.use(new LocalStrategy(async function (username, password, done) {
 //   done(null, user.password)
 // })
 passport.serializeUser(function(user, done) {
-  done(null, user);
+  return done(null, user);
 });
 
 passport.deserializeUser(function(user, done) {
-  done(null, user);
+  return done(null, user);
 })
 module.exports = passport

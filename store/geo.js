@@ -1,6 +1,7 @@
+
 const state = () => ({
   position: {
-    city:''
+    city: '北京'
   }
 })
 
@@ -18,7 +19,7 @@ const actions = {
   }
 }
 
-module.exports = {
+export default  {
   namespaced: true,
   state,
   mutations,

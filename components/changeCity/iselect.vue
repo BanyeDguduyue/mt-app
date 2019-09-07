@@ -73,8 +73,9 @@ export default {
       }
     }, 200),
     handleSelect(item) {
-      console.log(item);
+      // console.log(item);
       // 选择城市后把vuex的city换成选择后的就OK了
+      localStorage.setItem('city',item.value)
     }
   }
 }

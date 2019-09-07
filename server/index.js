@@ -17,6 +17,8 @@ const users = require('./interface/users')
 const geo = require('./interface/geo')
 const search = require('./interface/search')
 const categroy = require('./interface/categroy')
+const cart = require('./interface/cart')
+const order = require('./interface/order.js')
 const app = new Koa()
 
 // Import and Set Nuxt.js options
@@ -54,15 +56,17 @@ app.use(users.routes()).use(users.allowedMethods())
 app.use(geo.routes()).use(geo.allowedMethods())
 app.use(search.routes()).use(search.allowedMethods())
 app.use(categroy.routes()).use(categroy.allowedMethods())
+app.use(cart.routes()).use(cart.allowedMethods())
+app.use(order.routes()).use(order.allowedMethods())
 async function start() {
   // Instantiate nuxt.js
   const nuxt = new Nuxt(config)
-
   const {
     host = process.env.HOST || '127.0.0.1',
       port = process.env.PORT || 3000
   } = nuxt.options.server
-
+  console.log(host,port);
+  
   // Build in development
   if (config.dev) {
     const builder = new Builder(nuxt)
@@ -78,7 +82,7 @@ async function start() {
     nuxt.render(ctx.req, ctx.res)
   })
 
-  app.listen(port, host)
+  app.listen(port,host)
   consola.ready({
     message: `Server listening on http://${host}:${port}`,
     badge: true
