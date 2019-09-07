@@ -69,7 +69,7 @@ export default {
       })
     },
     list(){
-      let val = this.name
+      let val = this.activeName
       this.cur = this.list.filter(item => {
         if(val == 'unpay'){
           return item.status === 0
@@ -80,30 +80,22 @@ export default {
         }
       })
     }
-
   },
   methods:{
     handleClick(tab){
       this.activeName = tab.name  
     }
   },
-  async asyncData(){
+  async created(){
+    console.log(1);
+    
+    // 要改动需要增加用户参数不然会返回所有的商品
     let {status,data:{code,list}} = await axios.post('http://127.0.0.1:3000/order/getOrders')
     console.log(code,list);
     
     if(status === 200 && code === 0 && list.length){
-      return {
-        list: list.map(item => {
-          return {
-            img: item.imgs.length? item.imgs[0].url:'/logo.png',
-            name:item.name,
-            count:1,
-            total:item.total,
-            status:item.status,
-            statusTxt:item.status === 0 ?'待付款':'已付款'
-          }
-        }),
-        cur:list.map(item => {
+      this.list = this.cur =
+        list.map(item => {
           return {
             img: item.imgs.length? item.imgs[0].url:'/logo.png',
             name:item.name,
@@ -113,7 +105,7 @@ export default {
             statusTxt:item.status === 0 ?'待付款':'已付款'
           }
         })
-      }
+        
     }
   }
 }

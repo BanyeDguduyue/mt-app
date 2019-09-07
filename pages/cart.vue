@@ -40,10 +40,10 @@ export default {
       })
 
       if(status === 200&&code === 0){
-        this.$alert(`恭喜您，已成功下单，订单号：${id}`,'下单成功',{
+        this.$alert(`恭喜您，已成功下单请在我的订单中查看，订单号：${id}`,'下单成功',{
           confirmButtonText:'确定',
           callback:action =>  {
-            location.href = '/order'
+            location.href = 'http://127.0.0.1:3000/order'
           }
         })
       }

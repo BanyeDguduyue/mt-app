@@ -50,7 +50,7 @@ export default {
       // keyword:'',
       // type:'',
       // product:{},
-      // login:''
+      login:''
     }
   },
   computed:{
@@ -64,6 +64,14 @@ export default {
     List
   },
   // 这玩意是在服务端执行的  看出来了。。
+  async mounted(){
+    let {status,data:{login}} = await axios.get('http://127.0.0.1:3000/search/verify')
+    if(status == 200){
+      this.login = login
+    }else{
+      this.login = false
+    }
+  },
   async asyncData(ctx){
     let {keyword,type} = ctx.query
     let {status,data:{product,more:list,login}} = await axios.get('http://127.0.0.1:3000/search/products',{
@@ -79,7 +87,6 @@ export default {
         product,
         type,
         list,
-        login
       }
     }else{
       return {
@@ -87,7 +94,6 @@ export default {
         product:{},
         type,
         list:[],
-        login:false
       }
     }
   }
