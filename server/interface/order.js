@@ -52,6 +52,7 @@ router.post('/createOrder',async ctx => {
 })
 
 router.post('/getOrders',async ctx =>{
+  console.log(1);
   console.log('order',ctx.isAuthenticated());
   
   if(!ctx.isAuthenticated()){

@@ -27,37 +27,49 @@ export default {
       point: []
     }
   },
+  methods: {
+    getUrlParam(name) {
+      let urlobj = {}
+      const curhref = window.location.href.split('?')[1]
+      if (curhref.indexOf('&')) {
+        curhref.split('&').forEach(item => {
+          urlobj[item.split('=')[0]] = item.split('=')[1]
+        })
+      } else {
+        urlobj[curhref.split('=')[0]] = curhref.split('=')[1]
+      } 
+      return urlobj[name]
+    }
+  },
   components: {
     Crumbs,
     Categroy,
     List,
     Amap
   },
-  async asyncData(ctx) {
+  async created() {
+    const city = window.localStorage.getItem('city').replace('市','')
+    const keyword = decodeURIComponent(this.getUrlParam('keyword'))
+    console.log(city,keyword);
     
-    
-    let keyword = ctx.query.keyword
-    let city = ctx.store.state.geo.position.city
-
-
-    
-    let {status,data:{count,pois}} = await axios.get('http://127.0.0.1:3000/search/resultsByKeywords',{
-      params:{
+    let { status, data: { count, pois } } = await axios.get('http://127.0.0.1:3000/search/resultsByKeywords', {
+      params: {
         keyword,
         city
       }
     })
-
+    
     
     let { status: status2, data: { areas, types } } = await axios.get('http://127.0.0.1:3000/categroy/crumbs', {
       params: {
         city
       }
     })
-
-    if (status === 200 && count > 0 && status === 200) {
-      return {
-        list: pois.filter(item => item.photos.length).map(item => {
+    
+    
+    if (status === 200 && count > 0 && status2 === 200) {
+      
+        this.list = pois.filter(item => item.photos.length).map(item => {
           return {
             type: item.type,
             img: item.photos[0].url,
@@ -71,13 +83,54 @@ export default {
             locataion: item.locataion,
             module: item.type.split(';')[0]
           }
-        }),
-        keyword,
-        areas: areas.filter(item => {item.type !== ''}).slice(0, 5),
-        types: types.filter(item => {item.type !== ''}).slice(0, 5),
-        point: (pois.find(item => item.location).location || '').split(',')
+        })
+        this.keyword = keyword
+        this.areas = areas.filter(item => { item.type !== '' }).slice(0, 5)
+        this.types = types.filter(item => { item.type !== '' }).slice(0, 5)
+        this.point = (pois.find(item => item.location).location || '').split(',')
       }
-    }
+
+  },
+  async asyncData(ctx) {
+    let keyword = ctx.query.keyword
+  
+    // let city = ctx.store.state.geo.position.city
+    // let { status, data: { count, pois } } = await axios.get('http://127.0.0.1:3000/search/resultsByKeywords', {
+    //   params: {
+    //     keyword,
+    //     city
+    //   }
+    // })
+
+    // let { status: status2, data: { areas, types } } = await axios.get('http://127.0.0.1:3000/categroy/crumbs', {
+    //   params: {
+    //     city
+    //   }
+    // })
+
+    // if (status === 200 && count > 0 && status === 200) {
+    //   return {
+    //     list: pois.filter(item => item.photos.length).map(item => {
+    //       return {
+    //         type: item.type,
+    //         img: item.photos[0].url,
+    //         name: item.name,
+    //         comment: Math.floor(Math.random() * 10000),
+    //         rate: Number(item.biz_ext.rating),
+    //         price: Number(item.biz_ext.cost),
+    //         scene: item.tag,
+    //         tel: item.tel,
+    //         status: '可订明日',
+    //         locataion: item.locataion,
+    //         module: item.type.split(';')[0]
+    //       }
+    //     }),
+    //     keyword,
+    //     areas: areas.filter(item => { item.type !== '' }).slice(0, 5),
+    //     types: types.filter(item => { item.type !== '' }).slice(0, 5),
+    //     point: (pois.find(item => item.location).location || '').split(',')
+    //   }
+    // }
   }
 }
 </script>

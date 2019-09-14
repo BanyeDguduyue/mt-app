@@ -89,7 +89,7 @@ router.get('/products', async ctx => {
     ctx.body = {
       product,
       more:more,
-    }s
+    }
   }else{
     ctx.body = {
       product:{},

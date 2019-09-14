@@ -45,10 +45,9 @@ export default {
           }
         }
       })
-      console.log(status);
       
       if(status === 200&&code === 0){
-        window.location.href = `http://127.0.0.1:3000/cart/?id=${id}`
+        window.location.href = `/cart/?id=${id}`
       }else{
         console.log('error');
       }

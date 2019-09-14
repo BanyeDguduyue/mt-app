@@ -31,7 +31,7 @@ export default {
   },
   methods:{
     async submit(){
-      let {status,data:{code,id}} = await axios.post('/order/createOrder',{
+      let {status,data:{code,id}} = await axios.post('http://127.0.0.1:3000/order/createOrder',{
         params:{
           count:this.cart[0].count,
           price:this.cart[0].price,

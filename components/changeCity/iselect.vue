@@ -5,8 +5,8 @@
       <el-option v-for="item in province" :key="item.value" :label="item.label" :value="item.value">
       </el-option>
     </el-select>
-    <el-select :disabled="!city.length" v-model="cvalue" placeholder="城市">
-      <el-option v-for="item in city" :key="item.value" :label="item.label" :value="item.value">
+    <el-select :disabled="!city.length" v-model="cvalue" placeholder="城市" @change="handleChoose">
+      <el-option v-for="item in city" :key="item.value" :label="item.label" :value="item.label">
       </el-option>
     </el-select>
     <el-autocomplete v-model="input" :fetch-suggestions="querySearchAsync" placeholder="请输入城市中文或拼音" @select="handleSelect"></el-autocomplete>
@@ -24,18 +24,18 @@ export default {
       city: [],
       cvalue: '',
       input: '',
-      cities:[]
+      cities: []
     }
   },
   watch: {
     // 监控省份的变化 变化就执行以下函数
     async pvalue(newPvalue) {
-      let { status, data: { city } } = await axios.get(`/geo/province/${newPvalue}`)
+      let { status, data: { city } } = await axios.get(`geo/province/${newPvalue}`)
       if (status === 200) {
         this.city = city.map(item => {
           return {
             value: item.id,
-            label: item.name
+            label: item.name === '市辖区' ? item.province : item.name
           }
         })
         this.cvalue = ''
@@ -43,7 +43,7 @@ export default {
     }
   },
   async mounted() {
-    let { status, data: { province } } = await axios.get('/geo/province')
+    let { status, data: { province } } = await axios.get('geo/province')
     if (status == 200) {
       this.province = province.map(item => {
         return {
@@ -56,18 +56,18 @@ export default {
   methods: {
     // query是搜索的字符串 cb是回调
     querySearchAsync: lodash.debounce(async function (query, cb) {
-      if(this.cities.length){
-        cb(this.cities.filter(item => item.value.indexOf(query)>-1))
-      }else{
-        let {status,data:{city}} = await axios.get('/geo/city')
-        if(status === 200){
+      if (this.cities.length) {
+        cb(this.cities.filter(item => item.value.indexOf(query) > -1))
+      } else {
+        let { status, data: { city } } = await axios.get('geo/city')
+        if (status === 200) {
           this.cities = city.map(item => {
             return {
-              value:item.name
+              value: item.name === '市辖区' ? item.province : item.name
             }
           })
-          cb(this.cities.filter(item => item.value.indexOf(query)>-1))
-        }else{
+          cb(this.cities.filter(item => item.value.indexOf(query) > -1))
+        } else {
           cb([])
         }
       }
@@ -75,7 +75,13 @@ export default {
     handleSelect(item) {
       // console.log(item);
       // 选择城市后把vuex的city换成选择后的就OK了
-      localStorage.setItem('city',item.value)
+      window.localStorage.setItem('city', item.value)
+      window.location.reload()
+    },
+    handleChoose(item) {
+      console.log(item);
+      window.localStorage.setItem('city', item)
+      window.location.reload()
     }
   }
 }

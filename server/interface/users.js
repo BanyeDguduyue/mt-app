@@ -231,7 +231,6 @@ router.get('/exit', async (ctx, next) => {
 
 // 获取用户名
 router.get('/getUser', async ctx => {
-  console.log('get',ctx.isAuthenticated());
   if (ctx.isAuthenticated()) {
     const {
       username,

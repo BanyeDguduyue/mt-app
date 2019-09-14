@@ -105,7 +105,6 @@ export default {
             statusTxt:item.status === 0 ?'待付款':'已付款'
           }
         })
-        
     }
   }
 }

@@ -22,11 +22,7 @@
 
         </div>
         <p class="suggest">
-          <a href="#">故宫博物院</a>
-          <a href="#">故宫博物院</a>
-          <a href="#">故宫博物院</a>
-          <a href="#">故宫博物院</a>
-          <a href="#">故宫博物院</a>
+          <a  v-for="(item,idx) in hotPlace" :key="idx" :href="'/products?keyword=' + encodeURIComponent(item.name)">{{item.name}}</a>
         </p>
         <ul class="nav">
           <li>
@@ -88,7 +84,7 @@ export default {
       search: '',
       isFocus: false,
       searchList: [],
-      hotPlace: this.$store.state.home.hotPlace.slice(0, 5)
+      hotPlace: []
     }
   },
   computed: {
@@ -110,7 +106,7 @@ export default {
     },
     input: lodash.debounce(async function () {
       let _this = this
-      let city = this.$store.state.geo.position.city.replace('市', '')
+      let city = window.localStorage.getItem('city') !== null ? window.localStorage.getItem('city').replace('市','') : '北京'
       this.searchList = []
       let { status, data: { top } } = await axios.get('/search/top', {
         params: {
@@ -121,6 +117,17 @@ export default {
       // 截取10条信息以免太多
       this.searchList = top.slice(0, 10)
     })
+  },
+  async created(){
+    const {status:status3,data:{result}} = await axios.get('/search/hotPlace',{
+      params:{
+        city: window.localStorage.getItem('city') !== null ? window.localStorage.getItem('city').replace('市','') : '北京'
+      }
+    })
+
+    if(status3 == 200){
+      this.hotPlace = result.splice(0,5)
+    }
   }
 }
 </script>
